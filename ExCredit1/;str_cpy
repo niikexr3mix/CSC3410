@@ -1,0 +1,54 @@
+;str_cpy
+
+DIS MACRO STR
+        MOV AH,09H
+        LEA DX,STR
+        INT 21H
+ENDM
+DATA SEGMENT
+    MSG1 DB \"ENTER THE STRING : $\"
+    MSG2 DB \"COPYED STRING IS : $\"
+    LINE DB 10,13,\'$\'
+    STR1 DB 20 DUP(\'$\')
+    STR2 DB 20 DUP(\'$\')
+DATA ENDS
+
+CODE SEGMENT
+         COPY PROC NEAR
+         ASSUME CS:CODE
+         MOV CX,0000
+         MOV CL,BYTE PTR[SI]
+         INC SI
+      L1:MOV AH,BYTE PTR[SI]
+         MOV BYTE PTR[DI],AH
+         INC SI
+         INC DI
+         LOOP L1
+         RET
+         COPY ENDP
+         ASSUME DS:DATA,CS:CODE
+START:
+         MOV AX,DATA
+         MOV DS,AX
+         DIS MSG1
+         MOV AH,0AH
+         LEA DX,STR1
+         INT 21H
+         DIS LINE
+         LEA SI,STR1+1
+         LEA DI,STR2
+         CALL COPY
+         DIS MSG2
+         DIS STR2
+         MOV AH,4CH
+         INT 21H
+CODE ENDS
+END START
+
+;------
+;OUTPUT
+;------
+
+
+    ENTER THE STRING : JINESH
+    COPYED STRING IS : JINESH
